@@ -20,6 +20,11 @@ class _DetectMainState extends State<DetectMain> {
   double _imageWidth;
   double _imageHeight;
   var _recognitions;
+  var remedy={
+    'Cardamom':['remedy1C','remedy2C'],
+    'Gotu Kola':['remedy1GK'],
+    'Turmeric':['remedy1T']
+  };
 
   loadModel() async {
     Tflite.close();
@@ -99,6 +104,30 @@ class _DetectMainState extends State<DetectMain> {
     });
   }
 
+  Widget printRemedy(rcg) {
+    if (rcg == null) {
+      return Text('', style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700));
+    }else if(rcg.isEmpty){
+      return Center(
+        child: Text("Could not recognize", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700)),
+      );
+    }
+
+    var remedyList = remedy[_recognitions[0]['label'].toString()];
+    print(remedyList.length);
+    print(remedyList);
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: remedyList.length,
+      itemBuilder: (context, index) {
+        return Text(
+              "Remedy: "+remedyList[index],
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        );
+      },
+    );
+  }
 
   Widget printValue(rcg) {
     if (rcg == null) {
@@ -156,7 +185,7 @@ class _DetectMainState extends State<DetectMain> {
           iconTheme: IconThemeData(
             color: Colors.black, //change your color here
           ),
-          title: Text("Flutter x TF-Lite", style: TextStyle(color: Colors.white),),
+          title: Text("Ayurvedha Remedy", style: TextStyle(color: Colors.white),),
           backgroundColor: Colors.teal,
           centerTitle: true,
         ),
@@ -206,6 +235,10 @@ class _DetectMainState extends State<DetectMain> {
                 ),
               ],
             ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0,30,0,0),
+              child: printRemedy(_recognitions),
+            )
           ],
         )
     );
